@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "github.com/zufardhiyaulhaq/echo-grpc/proto";
+
+service Server {
+    rpc GetStatus(Empty) returns (Status);
+}
+
+message Empty {}
+message Status {
+    bool status = 1;
+}
