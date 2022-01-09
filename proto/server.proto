@@ -3,10 +3,13 @@ syntax = "proto3";
 option go_package = "github.com/zufardhiyaulhaq/echo-grpc/proto";
 
 service Server {
-    rpc GetStatus(Empty) returns (Status);
+    rpc GetReply(Message) returns (Response);
 }
 
-message Empty {}
-message Status {
-    bool status = 1;
+message Message {
+    string message = 1;
+}
+
+message Response {
+    string response = 1;
 }

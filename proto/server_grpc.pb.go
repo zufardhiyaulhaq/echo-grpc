@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServerClient interface {
-	GetStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Status, error)
+	GetReply(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Response, error)
 }
 
 type serverClient struct {
@@ -29,9 +29,9 @@ func NewServerClient(cc grpc.ClientConnInterface) ServerClient {
 	return &serverClient{cc}
 }
 
-func (c *serverClient) GetStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
-	err := c.cc.Invoke(ctx, "/Server/GetStatus", in, out, opts...)
+func (c *serverClient) GetReply(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/Server/GetReply", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *serverClient) GetStatus(ctx context.Context, in *Empty, opts ...grpc.Ca
 // All implementations must embed UnimplementedServerServer
 // for forward compatibility
 type ServerServer interface {
-	GetStatus(context.Context, *Empty) (*Status, error)
+	GetReply(context.Context, *Message) (*Response, error)
 	mustEmbedUnimplementedServerServer()
 }
 
@@ -50,8 +50,8 @@ type ServerServer interface {
 type UnimplementedServerServer struct {
 }
 
-func (UnimplementedServerServer) GetStatus(context.Context, *Empty) (*Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStatus not implemented")
+func (UnimplementedServerServer) GetReply(context.Context, *Message) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetReply not implemented")
 }
 func (UnimplementedServerServer) mustEmbedUnimplementedServerServer() {}
 
@@ -66,20 +66,20 @@ func RegisterServerServer(s grpc.ServiceRegistrar, srv ServerServer) {
 	s.RegisterService(&Server_ServiceDesc, srv)
 }
 
-func _Server_GetStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+func _Server_GetReply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServerServer).GetStatus(ctx, in)
+		return srv.(ServerServer).GetReply(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Server/GetStatus",
+		FullMethod: "/Server/GetReply",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServerServer).GetStatus(ctx, req.(*Empty))
+		return srv.(ServerServer).GetReply(ctx, req.(*Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,8 +92,8 @@ var Server_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetStatus",
-			Handler:    _Server_GetStatus_Handler,
+			MethodName: "GetReply",
+			Handler:    _Server_GetReply_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

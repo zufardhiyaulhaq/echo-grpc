@@ -5,8 +5,8 @@ OUT_DIR := ./output
 $(shell mkdir -p $(BIN_DIR) $(OUT_DIR))
 
 IMAGE_REGISTRY=zufardhiyaulhaq
-SERVER_IMAGE_NAME=$(IMAGE_REGISTRY)/echo-grpc-client
-CLIENT_IMAGE_NAME=$(IMAGE_REGISTRY)/echo-grpc-server
+SERVER_IMAGE_NAME=$(IMAGE_REGISTRY)/echo-grpc-server
+CLIENT_IMAGE_NAME=$(IMAGE_REGISTRY)/echo-grpc-client
 
 IMAGE_TAG=$(shell git rev-parse --short HEAD)
 
@@ -45,24 +45,46 @@ grpc.up:
 grpc.down:
 	docker-compose --file docker-compose.yaml down
 
-.PHONY: run
-run:
-	go run .
+.PHONY: client.run
+client.run:
+	go run ./client/
+
+.PHONY: server.run
+server.run:
+	go run ./server/
+
+.PHONY: client.build
+client.build:
+	CGO_ENABLED=0 GO111MODULE=on go build -a -ldflags '${LDFLAGS}' -o ${BIN_DIR}/client-echo-grpc ./client/
 
 .PHONY: server.build
 server.build:
-	CGO_ENABLED=0 GO111MODULE=on go build -a -ldflags '${LDFLAGS}' -o ${BIN_DIR}/echo-grpc-client ./server/
+	CGO_ENABLED=0 GO111MODULE=on go build -a -ldflags '${LDFLAGS}' -o ${BIN_DIR}/server-echo-grpc ./server/
 
 .PHONY: server.image.build
 server.image.build:
 	echo "building container image"
 	DOCKER_BUILDKIT=1 docker build \
-		-t $(IMAGE_NAME):$(IMAGE_TAG) \
+		-t $(SERVER_IMAGE_NAME):$(IMAGE_TAG) -f server.Dockerfile \
 		--build-arg GITCONFIG=$(GITCONFIG) --build-arg BUILDKIT_INLINE_CACHE=1 .
-	docker tag $(IMAGE_NAME):$(IMAGE_TAG) $(IMAGE_NAME):latest
+	docker tag $(SERVER_IMAGE_NAME):$(IMAGE_TAG) $(SERVER_IMAGE_NAME):latest
+
+.PHONY: client.image.build
+client.image.build:
+	echo "building container image"
+	DOCKER_BUILDKIT=1 docker build \
+		-t $(CLIENT_IMAGE_NAME):$(IMAGE_TAG) -f client.Dockerfile \
+		--build-arg GITCONFIG=$(GITCONFIG) --build-arg BUILDKIT_INLINE_CACHE=1 .
+	docker tag $(CLIENT_IMAGE_NAME):$(IMAGE_TAG) $(CLIENT_IMAGE_NAME):latest
 
 .PHONY: server.image.release
 server.image.release:
 	echo "pushing container image"
-	docker push $(IMAGE_NAME):latest
-	docker push $(IMAGE_NAME):$(IMAGE_TAG)
+	docker push $(SERVER_IMAGE_NAME):latest
+	docker push $(SERVER_IMAGE_NAME):$(IMAGE_TAG)
+
+.PHONY: client.image.release
+client.image.release:
+	echo "pushing container image"
+	docker push $(CLIENT_IMAGE_NAME):latest
+	docker push $(CLIENT_IMAGE_NAME):$(IMAGE_TAG)

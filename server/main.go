@@ -1,28 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net"
+
+	"github.com/rs/zerolog/log"
+	"github.com/zufardhiyaulhaq/echo-grpc/server/pkg/settings"
 
 	pb "github.com/zufardhiyaulhaq/echo-grpc/proto"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	settings, err := NewSettings()
+	settings, err := settings.NewSettings()
 	if err != nil {
-		log.Fatalf("failed to get settings: %v", err)
+		log.Fatal().AnErr("failed to get settings", err)
 	}
 
-	listener, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", settings.Port))
+	log.Info().Msg("starting grpc server")
+
+	listener, err := net.Listen("tcp", "0.0.0.0:"+settings.Port)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatal().AnErr("failed to listen connection", err)
 	}
 
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
 
 	pb.RegisterServerServer(grpcServer, NewServer())
+	pb.RegisterHealthServer(grpcServer, NewServer())
 	grpcServer.Serve(listener)
 }

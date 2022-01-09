@@ -24,7 +24,7 @@ FROM golang:1.16-alpine AS server-echo-grpc-builder
 RUN apk add --update --no-cache alpine-sdk
 WORKDIR /app
 COPY . .
-RUN make build
+RUN make server.build
 
 #################
 # Final image

@@ -8,12 +8,22 @@ import (
 
 type Server struct {
 	pb.UnimplementedServerServer
+	pb.UnimplementedHealthServer
 }
 
-func (s *Server) GetStatus(ctx context.Context, point *pb.Empty) (*pb.Status, error) {
-	return &pb.Status{
-		Status: true,
+func (s *Server) GetReply(ctx context.Context, msg *pb.Message) (*pb.Response, error) {
+	return &pb.Response{
+		Response: "from server:" + msg.Message,
 	}, nil
+}
+
+func (s *Server) Check(ctx context.Context, req *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error) {
+	return &pb.HealthCheckResponse{
+		Status: pb.HealthCheckResponse_SERVING,
+	}, nil
+}
+func (s *Server) Watch(req *pb.HealthCheckRequest, watch pb.Health_WatchServer) error {
+	return nil
 }
 
 func NewServer() *Server {

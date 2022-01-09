@@ -1,9 +1,9 @@
-package main
+package settings
 
 import "github.com/kelseyhightower/envconfig"
 
 type Settings struct {
-	Port int `envconfig:"PORT" default:"8080"`
+	Port string `envconfig:"GRPC_SERVER_PORT" default:"8081"`
 }
 
 func NewSettings() (Settings, error) {
