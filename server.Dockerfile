@@ -11,7 +11,9 @@ RUN addgroup -g 10001 server-echo-grpc && \
     chown server-echo-grpc:0 /home/server-echo-grpc && \
     chmod g=u /home/server-echo-grpc && \
     chmod g=u /etc/passwd
-RUN apk add --update --no-cache alpine-sdk curl
+RUN apk add --update --no-cache alpine-sdk curl wget
+RUN wget -O /bin/grpc_health_probe-linux-amd64 https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.6/grpc_health_probe-linux-amd64
+RUN chmod 755 /bin/grpc_health_probe-linux-amd64
 
 ENV USER=server-echo-grpc
 USER 10001
