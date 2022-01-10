@@ -37,6 +37,7 @@ func (e Server) ServeEcho() {
 			Message: value,
 		})
 		if err != nil {
+			log.Err(err)
 			out = []byte(err.Error())
 			return
 		}
@@ -92,6 +93,7 @@ func (h Handler) Handle(w http.ResponseWriter, req *http.Request) {
 		Message: value,
 	})
 	if err != nil {
+		log.Err(err)
 		w.WriteHeader(http.StatusBadGateway)
 		w.Write([]byte(err.Error()))
 		return

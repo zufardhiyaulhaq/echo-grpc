@@ -7,6 +7,7 @@ type Settings struct {
 	HTTPPort       string `envconfig:"HTTP_PORT" default:"80"`
 	GRPCServerHost string `envconfig:"GRPC_SERVER_HOST" default:"server"`
 	GRPCServerPort string `envconfig:"GRPC_SERVER_PORT" default:"8080"`
+	GRPCServerTLS  bool   `envconfig:"GRPC_SERVER_TLS" default:false`
 }
 
 func NewSettings() (Settings, error) {

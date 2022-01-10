@@ -1,12 +1,14 @@
 package main
 
 import (
+	"crypto/tls"
 	"sync"
 
 	"github.com/rs/zerolog/log"
 	"github.com/zufardhiyaulhaq/echo-grpc/client/pkg/server"
 	"github.com/zufardhiyaulhaq/echo-grpc/client/pkg/settings"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	pb "github.com/zufardhiyaulhaq/echo-grpc/proto"
 )
@@ -20,7 +22,15 @@ func main() {
 	log.Info().Msg("creating grpc connection")
 
 	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithInsecure())
+	if settings.GRPCServerTLS {
+		config := &tls.Config{
+			InsecureSkipVerify: true,
+		}
+		creds := credentials.NewTLS(config)
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+	} else {
+		opts = append(opts, grpc.WithInsecure())
+	}
 
 	conn, err := grpc.Dial(settings.GRPCServerHost+":"+settings.GRPCServerPort, opts...)
 	if err != nil {
