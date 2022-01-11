@@ -9,6 +9,7 @@ import (
 	"github.com/zufardhiyaulhaq/echo-grpc/client/pkg/settings"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
 
 	pb "github.com/zufardhiyaulhaq/echo-grpc/proto"
 )
@@ -22,6 +23,7 @@ func main() {
 	log.Info().Msg("creating grpc connection")
 
 	var opts []grpc.DialOption
+
 	if settings.GRPCServerTLS {
 		config := &tls.Config{
 			InsecureSkipVerify: true,
@@ -30,6 +32,14 @@ func main() {
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
 		opts = append(opts, grpc.WithInsecure())
+	}
+
+	if settings.GRPCKeepalive {
+		keepaliveParams := keepalive.ClientParameters{
+			Time:    settings.GRPCKeepaliveTime,
+			Timeout: settings.GRPCKeepaliveTimeout,
+		}
+		opts = append(opts, grpc.WithKeepaliveParams(keepaliveParams))
 	}
 
 	conn, err := grpc.Dial(settings.GRPCServerHost+":"+settings.GRPCServerPort, opts...)

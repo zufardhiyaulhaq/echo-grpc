@@ -8,6 +8,7 @@ import (
 
 	pb "github.com/zufardhiyaulhaq/echo-grpc/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 )
 
 func main() {
@@ -24,6 +25,15 @@ func main() {
 	}
 
 	var opts []grpc.ServerOption
+
+	if settings.GRPCKeepalive {
+		keepaliveParams := keepalive.ServerParameters{
+			Time:    settings.GRPCKeepaliveTime,
+			Timeout: settings.GRPCKeepaliveTimeout,
+		}
+		opts = append(opts, grpc.KeepaliveParams(keepaliveParams))
+	}
+
 	grpcServer := grpc.NewServer(opts...)
 
 	pb.RegisterServerServer(grpcServer, NewServer())
