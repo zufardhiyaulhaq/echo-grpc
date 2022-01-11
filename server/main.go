@@ -27,6 +27,7 @@ func main() {
 	var opts []grpc.ServerOption
 
 	if settings.GRPCKeepalive {
+		log.Info().Msg("setting gRPC to enable keepalive")
 		keepaliveParams := keepalive.ServerParameters{
 			Time:    settings.GRPCKeepaliveTime,
 			Timeout: settings.GRPCKeepaliveTimeout,

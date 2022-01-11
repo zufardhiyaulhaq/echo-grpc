@@ -9,7 +9,7 @@ import (
 type Settings struct {
 	Port                 string        `envconfig:"GRPC_SERVER_PORT" default:"8081"`
 	GRPCKeepalive        bool          `envconfig:"GRPC_SERVER_KEEPALIVE" default:"false"`
-	GRPCKeepaliveTime    time.Duration `envconfig:"GRPC_SERVER_KEEPALIVE_TIME" default:"10s"`
+	GRPCKeepaliveTime    time.Duration `envconfig:"GRPC_SERVER_KEEPALIVE_TIME" default:"2h"`
 	GRPCKeepaliveTimeout time.Duration `envconfig:"GRPC_SERVER_KEEPALIVE_TIMEOUT" default:"20s"`
 }
 

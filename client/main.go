@@ -25,6 +25,7 @@ func main() {
 	var opts []grpc.DialOption
 
 	if settings.GRPCServerTLS {
+		log.Info().Msg("setting gRPC to call with TLS")
 		config := &tls.Config{
 			InsecureSkipVerify: true,
 		}
@@ -35,6 +36,7 @@ func main() {
 	}
 
 	if settings.GRPCKeepalive {
+		log.Info().Msg("setting gRPC to enable keepalive")
 		keepaliveParams := keepalive.ClientParameters{
 			Time:    settings.GRPCKeepaliveTime,
 			Timeout: settings.GRPCKeepaliveTimeout,
