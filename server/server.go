@@ -13,6 +13,7 @@ type Server struct {
 
 func (s *Server) GetReply(ctx context.Context, msg *pb.Message) (*pb.Response, error) {
 	return &pb.Response{
+		Success:  true,
 		Response: "from server:" + msg.Message,
 	}, nil
 }

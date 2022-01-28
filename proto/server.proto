@@ -11,5 +11,6 @@ message Message {
 }
 
 message Response {
-    string response = 1;
+    bool success = 1;
+    string response = 2;
 }

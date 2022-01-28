@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -42,7 +43,7 @@ func (e Server) ServeEcho() {
 			return
 		}
 
-		out = []byte(key + ":" + reply.Response)
+		out = []byte(key + ":" + reply.Response + fmt.Sprintf(":success:%v", reply.Success))
 
 		return
 	}
@@ -100,5 +101,5 @@ func (h Handler) Handle(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(key + ":" + reply.Response))
+	w.Write([]byte(key + ":" + reply.Response + fmt.Sprintf(":success:%v", reply.Success)))
 }
