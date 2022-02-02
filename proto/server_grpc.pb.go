@@ -31,7 +31,7 @@ func NewServerClient(cc grpc.ClientConnInterface) ServerClient {
 
 func (c *serverClient) GetReply(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/Server/GetReply", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/com.gopay.echo.Server/GetReply", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func _Server_GetReply_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Server/GetReply",
+		FullMethod: "/com.gopay.echo.Server/GetReply",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServerServer).GetReply(ctx, req.(*Message))
@@ -88,7 +88,7 @@ func _Server_GetReply_Handler(srv interface{}, ctx context.Context, dec func(int
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Server_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Server",
+	ServiceName: "com.gopay.echo.Server",
 	HandlerType: (*ServerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

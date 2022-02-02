@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package com.gopay.echo;
+
 option go_package = "github.com/zufardhiyaulhaq/echo-grpc/proto";
 
 service Server {
