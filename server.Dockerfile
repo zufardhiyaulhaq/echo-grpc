@@ -1,7 +1,7 @@
 #################
 # Base image
 #################
-FROM alpine:3.12 as server-echo-grpc-base
+FROM alpine:3.19.1 as server-echo-grpc-base
 
 USER root
 
@@ -22,7 +22,7 @@ WORKDIR /home/server-echo-grpc
 #################
 # Builder image
 #################
-FROM golang:1.16-alpine AS server-echo-grpc-builder
+FROM golang:1.21-alpine AS server-echo-grpc-builder
 RUN apk add --update --no-cache alpine-sdk
 WORKDIR /app
 COPY . .
