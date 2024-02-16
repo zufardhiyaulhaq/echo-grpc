@@ -7,7 +7,6 @@ import (
 )
 
 type Settings struct {
-	EchoPort             string        `envconfig:"ECHO_PORT" default:"5000"`
 	HTTPPort             string        `envconfig:"HTTP_PORT" default:"80"`
 	GRPCKeepalive        bool          `envconfig:"GRPC_CLIENT_KEEPALIVE" default:"false"`
 	GRPCKeepaliveTime    time.Duration `envconfig:"GRPC_CLIENT_KEEPALIVE_TIME" default:"10s"`

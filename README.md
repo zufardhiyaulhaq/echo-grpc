@@ -6,7 +6,7 @@ A client and server gRPC echo.
 ```
 source .env.example
 make server.run
-make clinet.run
+make client.run
 ```
 
 2. Testing

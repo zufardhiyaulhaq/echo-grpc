@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
-	"github.com/tidwall/evio"
 	"github.com/zufardhiyaulhaq/echo-grpc/client/pkg/settings"
 	pb "github.com/zufardhiyaulhaq/echo-grpc/proto"
 )
@@ -24,32 +23,6 @@ func NewServer(settings settings.Settings, client pb.ServerClient) Server {
 	return Server{
 		settings: settings,
 		client:   client,
-	}
-}
-
-func (e Server) ServeEcho() {
-	var events evio.Events
-
-	events.Data = func(c evio.Conn, in []byte) (out []byte, action evio.Action) {
-		key := uuid.New().String()
-		value := string(in)
-
-		reply, err := e.client.GetReply(ctx, &pb.Message{
-			Message: value,
-		})
-		if err != nil {
-			log.Info().Msg(err.Error())
-			out = []byte(err.Error())
-			return
-		}
-
-		out = []byte(key + ":" + reply.Response + fmt.Sprintf(":success:%v", reply.Success))
-
-		return
-	}
-
-	if err := evio.Serve(events, "tcp://0.0.0.0:"+e.settings.EchoPort); err != nil {
-		log.Fatal().Err(err)
 	}
 }
 
