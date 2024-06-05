@@ -11,7 +11,8 @@ RUN addgroup -g 10001 server-echo-grpc && \
     chown server-echo-grpc:0 /home/server-echo-grpc && \
     chmod g=u /home/server-echo-grpc && \
     chmod g=u /etc/passwd
-RUN apk add --update --no-cache alpine-sdk curl wget libc6-compat
+RUN apk add --update --no-cache alpine-sdk curl wget
+RUN apk add --update --no-cache libc6-compat
 RUN wget -O /bin/grpc_health_probe-linux-amd64 https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.4.6/grpc_health_probe-linux-amd64
 RUN chmod 755 /bin/grpc_health_probe-linux-amd64
 
@@ -23,6 +24,7 @@ WORKDIR /home/server-echo-grpc
 # Builder image
 #################
 FROM golang:1.22-alpine AS server-echo-grpc-builder
+RUN apk add --update --no-cache libc6-compat
 RUN apk add --update --no-cache alpine-sdk
 WORKDIR /app
 COPY . .
@@ -34,6 +36,7 @@ RUN make server.build
 FROM server-echo-grpc-base
 
 COPY --from=server-echo-grpc-builder /app/bin/server-echo-grpc /usr/local/bin
+RUN apk add --update --no-cache libc6-compat
 RUN chmod +x /usr/local/bin/server-echo-grpc
 RUN ls -lah /usr/local/bin/server-echo-grpc
 

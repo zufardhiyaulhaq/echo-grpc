@@ -11,7 +11,8 @@ RUN addgroup -g 10001 client-echo-grpc && \
     chown client-echo-grpc:0 /home/client-echo-grpc && \
     chmod g=u /home/client-echo-grpc && \
     chmod g=u /etc/passwd
-RUN apk add --update --no-cache alpine-sdk curl libc6-compat
+RUN apk add --update --no-cache alpine-sdk curl
+RUN apk add --update --no-cache libc6-compat
 
 ENV USER=client-echo-grpc
 USER 10001
@@ -21,6 +22,7 @@ WORKDIR /home/client-echo-grpc
 # Builder image
 #################
 FROM golang:1.22-alpine AS client-echo-grpc-builder
+RUN apk add --update --no-cache libc6-compat
 RUN apk add --update --no-cache alpine-sdk
 WORKDIR /app
 COPY . .
@@ -32,6 +34,7 @@ RUN make client.build
 FROM client-echo-grpc-base
 
 COPY --from=client-echo-grpc-builder /app/bin/client-echo-grpc /usr/local/bin
+RUN apk add --update --no-cache libc6-compat
 RUN chmod +x /usr/local/bin/client-echo-grpc
 RUN ls -lah /usr/local/bin/client-echo-grpc
 
