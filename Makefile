@@ -11,7 +11,6 @@ CLIENT_IMAGE_NAME=$(IMAGE_REGISTRY)/echo-grpc-client
 IMAGE_TAG=$(shell git rev-parse --short HEAD)
 
 CURRENT_DIR=$(shell pwd)
-VERSION=$(shell cat ${CURRENT_DIR}/VERSION)
 BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
 GIT_TREE_STATE=$(shell if [ -z "`git status --porcelain`" ]; then echo "clean" ; else echo "dirty"; fi)
@@ -19,7 +18,6 @@ GIT_TREE_STATE=$(shell if [ -z "`git status --porcelain`" ]; then echo "clean" ;
 STATIC_BUILD?=true
 
 override LDFLAGS += \
-  -X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.buildDate=${BUILD_DATE} \
   -X ${PACKAGE}.gitCommit=${GIT_COMMIT} \
   -X ${PACKAGE}.gitTreeState=${GIT_TREE_STATE}
