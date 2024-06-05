@@ -32,6 +32,7 @@ RUN make client.build
 FROM client-echo-grpc-base
 
 COPY --from=client-echo-grpc-builder /app/bin/client-echo-grpc /usr/local/bin
+RUN chmod +x /usr/local/bin/client-echo-grpc
 RUN ls -lah /usr/local/bin/client-echo-grpc
 
 # Command to run the executable

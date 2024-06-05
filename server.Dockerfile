@@ -34,6 +34,7 @@ RUN make server.build
 FROM server-echo-grpc-base
 
 COPY --from=server-echo-grpc-builder /app/bin/server-echo-grpc /usr/local/bin
+RUN chmod +x /usr/local/bin/server-echo-grpc
 RUN ls -lah /usr/local/bin/server-echo-grpc
 
 # Command to run the executable
