@@ -29,6 +29,7 @@ RUN apk add --update --no-cache alpine-sdk
 WORKDIR /app
 COPY . .
 RUN make server.build
+RUN chmod +x /app/bin/server-echo-grpc
 
 #################
 # Final image
@@ -36,8 +37,6 @@ RUN make server.build
 FROM server-echo-grpc-base
 
 COPY --from=server-echo-grpc-builder /app/bin/server-echo-grpc /usr/local/bin
-RUN apk add --update --no-cache libc6-compat
-RUN chmod +x /usr/local/bin/server-echo-grpc
 RUN ls -lah /usr/local/bin/server-echo-grpc
 
 # Command to run the executable
