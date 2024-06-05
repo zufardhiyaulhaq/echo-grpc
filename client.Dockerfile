@@ -11,7 +11,7 @@ RUN addgroup -g 10001 client-echo-grpc && \
     chown client-echo-grpc:0 /home/client-echo-grpc && \
     chmod g=u /home/client-echo-grpc && \
     chmod g=u /etc/passwd
-RUN apk add --update --no-cache alpine-sdk curl
+RUN apk add --update --no-cache alpine-sdk curl libc6-compat
 
 ENV USER=client-echo-grpc
 USER 10001
@@ -32,6 +32,7 @@ RUN make client.build
 FROM client-echo-grpc-base
 
 COPY --from=client-echo-grpc-builder /app/bin/client-echo-grpc /usr/local/bin
+RUN ls -lah /usr/local/bin/client-echo-grpc
 
 # Command to run the executable
 ENTRYPOINT ["client-echo-grpc"]
