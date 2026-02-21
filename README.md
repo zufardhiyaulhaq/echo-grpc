@@ -32,3 +32,36 @@ WebSocket endpoints for gRPC streaming:
 wscat -c ws://localhost:8080/ws/stream/server
 > {"stream_id":"1","message":"hello"}
 ```
+
+4. Testing gRPC Server with grpcurl
+
+Unary RPC:
+```bash
+grpcurl -plaintext -d '{"message":"hello"}' \
+  localhost:8081 com.gopay.echo.Server/GetReply
+```
+
+Server Streaming (receives 5 echoes with 1s intervals):
+```bash
+grpcurl -plaintext -d '{"stream_id":"1","message":"hello"}' \
+  localhost:8081 com.gopay.echo.streaming.StreamingServer/ServerStream
+```
+
+Client Streaming (send multiple messages, receive summary):
+```bash
+grpcurl -plaintext -d @ localhost:8081 \
+  com.gopay.echo.streaming.StreamingServer/ClientStream <<EOF
+{"stream_id":"1","sequence_number":1,"message":"msg1"}
+{"stream_id":"1","sequence_number":2,"message":"msg2"}
+{"stream_id":"1","sequence_number":3,"message":"msg3"}
+EOF
+```
+
+Bidirectional Streaming:
+```bash
+grpcurl -plaintext -d @ localhost:8081 \
+  com.gopay.echo.streaming.StreamingServer/BidirectionalStream <<EOF
+{"stream_id":"1","sequence_number":1,"message":"hello"}
+{"stream_id":"1","sequence_number":2,"message":"world"}
+EOF
+```
