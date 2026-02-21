@@ -39,5 +39,6 @@ func main() {
 
 	pb.RegisterServerServer(grpcServer, NewServer())
 	pb.RegisterHealthServer(grpcServer, NewServer())
+	pb.RegisterStreamingServerServer(grpcServer, NewStreamingServer())
 	grpcServer.Serve(listener)
 }

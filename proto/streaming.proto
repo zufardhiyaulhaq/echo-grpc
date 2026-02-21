@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.gopay.echo.streaming;
+
+option go_package = "github.com/zufardhiyaulhaq/echo-grpc/proto";
+
+service StreamingServer {
+    rpc ClientStream(stream StreamMessage) returns (StreamResponse);
+    rpc ServerStream(StreamMessage) returns (stream StreamResponse);
+    rpc BidirectionalStream(stream StreamMessage) returns (stream StreamResponse);
+}
+
+message StreamMessage {
+    string stream_id = 1;
+    int64 sequence_number = 2;
+    int64 timestamp = 3;
+    string message = 4;
+}
+
+message StreamResponse {
+    string stream_id = 1;
+    int64 sequence_number = 2;
+    int64 timestamp = 3;
+    string response = 4;
+    bool success = 5;
+}

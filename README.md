@@ -25,3 +25,10 @@ connection established (took 4.2449ms)
 time elapsed: connect=4.2449ms rpc=2.793724ms
 status: SERVING
 ```
+
+3. Streaming
+WebSocket endpoints for gRPC streaming:
+```
+wscat -c ws://localhost:8080/ws/stream/server
+> {"stream_id":"1","message":"hello"}
+```

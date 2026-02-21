@@ -51,12 +51,13 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewServerClient(conn)
+	streamingClient := pb.NewStreamingServerClient(conn)
 
 	wg := new(sync.WaitGroup)
 	wg.Add(2)
 
 	log.Info().Msg("starting server")
-	server := server.NewServer(settings, client)
+	server := server.NewServer(settings, client, streamingClient)
 
 	go func() {
 		log.Info().Msg("starting HTTP server")

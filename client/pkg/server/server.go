@@ -15,14 +15,16 @@ import (
 var ctx = context.Background()
 
 type Server struct {
-	settings settings.Settings
-	client   pb.ServerClient
+	settings        settings.Settings
+	client          pb.ServerClient
+	streamingClient pb.StreamingServerClient
 }
 
-func NewServer(settings settings.Settings, client pb.ServerClient) Server {
+func NewServer(settings settings.Settings, client pb.ServerClient, streamingClient pb.StreamingServerClient) Server {
 	return Server{
-		settings: settings,
-		client:   client,
+		settings:        settings,
+		client:          client,
+		streamingClient: streamingClient,
 	}
 }
 
@@ -32,6 +34,10 @@ func (e Server) ServeHTTP() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/grpc/{key}", handler.Handle)
+	wsHandler := NewWebSocketHandler(e.streamingClient)
+	r.HandleFunc("/ws/stream/bidirectional", wsHandler.HandleBidirectional)
+	r.HandleFunc("/ws/stream/server", wsHandler.HandleServerStream)
+	r.HandleFunc("/ws/stream/client", wsHandler.HandleClientStream)
 	r.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Hello!"))
