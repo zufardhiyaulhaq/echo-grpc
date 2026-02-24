@@ -9,6 +9,7 @@ import (
 	pb "github.com/zufardhiyaulhaq/echo-grpc/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -40,5 +41,6 @@ func main() {
 	pb.RegisterServerServer(grpcServer, NewServer())
 	pb.RegisterHealthServer(grpcServer, NewServer())
 	pb.RegisterStreamingServerServer(grpcServer, NewStreamingServer())
+	reflection.Register(grpcServer)
 	grpcServer.Serve(listener)
 }
